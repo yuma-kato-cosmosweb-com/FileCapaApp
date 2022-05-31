@@ -8,12 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
 
 namespace FileCapaApp
 {
-    public partial class Form1 : Form
+    public partial class FormMain : Form
     {
-        public Form1()
+        private const string TextSearching = "検索中";
+        private const string TetxIdle = "検索";
+        delegate void ButtonChangeDelegate(string buttontext);
+        public FormMain()
         {
             InitializeComponent();
         }
@@ -49,6 +53,10 @@ namespace FileCapaApp
             }
             fbd.Dispose();
         }
+        private bool IsSearching
+        {
+            get; set;
+        } = false;
 
         private void buttonSearch_Click(object sender, EventArgs e)      //  検索ボタンクリック
         {
@@ -58,6 +66,8 @@ namespace FileCapaApp
             int count = 0;
             int count2 = 0;
             var diPath = new List<string>();
+            Stopwatch stopWatch = new Stopwatch();
+
             Path = textBoxFolderName.Text;
 
             if (Path == "")             //  空白ではないか確認
@@ -74,8 +84,32 @@ namespace FileCapaApp
                 catch
                 {
                     ShowErrMessage(2);
+                    return;
                 }
 
+                if (buttonSearch.Text == TextSearching)                // ファイルを検索中かどうか
+                {
+                    IsSearching = false;
+                    //Invoke(new ButtonChangeDelegate(ButtonChange), "検索中止");             // 検索ボタンの文字を検索中止にする
+                }
+                Task.Run( () =>
+                {
+                    IsSearching = true;
+                    stopWatch.Start();
+                    Invoke(new ButtonChangeDelegate(ButtonChange), TextSearching);     // 検索ボタンの文字を検索中にする
+                    while (IsSearching)                   // 検索中にボタンが押されない限りループ
+                    {
+                        TimeSpan ts = stopWatch.Elapsed;
+                        if (ts.TotalSeconds > 5)
+                        {
+                            break;
+                        }
+                    }
+                    stopWatch.Stop();
+                    Invoke(new ButtonChangeDelegate(ButtonChange), TetxIdle);     // 検索ボタンの文字を検索にする
+
+                });
+#if false
                 try
                 {
                     DirectoryInfo DirInfo1 = new DirectoryInfo(Path);
@@ -106,6 +140,7 @@ namespace FileCapaApp
                 {
                     ShowErrMessage(1);
                 }
+#endif
             }
         }
 
@@ -178,6 +213,10 @@ namespace FileCapaApp
                 }
             }
             return count;
+        }
+        private void ButtonChange(string buttonname)
+        {
+            buttonSearch.Text = buttonname;
         }
     }
 }
