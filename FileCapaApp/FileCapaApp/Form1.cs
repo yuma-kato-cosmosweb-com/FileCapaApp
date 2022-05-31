@@ -17,7 +17,7 @@ namespace FileCapaApp
         {
             InitializeComponent();
         }
-        private void Err(int type)      //  エラーメッセージ
+        private void ShowErrMessage(int type)      //  エラーメッセージ
         {
             string Message = "";
             switch (type)
@@ -34,7 +34,7 @@ namespace FileCapaApp
             MessageBox.Show(Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void button1_Click(object sender, EventArgs e)          //  参照ボタンクリック
+        private void buttonSelectFolder_Click(object sender, EventArgs e)          //  参照ボタンクリック
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();        //FolderBrowserDialogクラスのインスタンスを作成
             fbd.Description = "フォルダを指定してください。";
@@ -45,11 +45,12 @@ namespace FileCapaApp
 
             if (fbd.ShowDialog(this) == DialogResult.OK)            //ダイアログを表示する
             {
-                textBox1.Text = fbd.SelectedPath;                //選択されたフォルダを表示する
+                textBoxFolderName.Text = fbd.SelectedPath;                //選択されたフォルダを表示する
             }
+            fbd.Dispose();
         }
 
-        private void button2_Click(object sender, EventArgs e)      //  検索ボタンクリック
+        private void buttonSearch_Click(object sender, EventArgs e)      //  検索ボタンクリック
         {
             dataGridView1.Rows.Clear();             //  表初期化
             string Path = "";
@@ -57,28 +58,28 @@ namespace FileCapaApp
             int count = 0;
             int count2 = 0;
             var diPath = new List<string>();
-            Path = textBox1.Text;
+            Path = textBoxFolderName.Text;
 
             if (Path == "")             //  空白ではないか確認
             {
-                Err(1);
+                ShowErrMessage(1);
             }
 
             else
             {
                 try
                 {
-                    Capacity = int.Parse(textBox2.Text);        //  int型に変換できるか確認
+                    Capacity = int.Parse(textBoxCapacity.Text);        //  int型に変換できるか確認
                 }
                 catch
                 {
-                    Err(2);
+                    ShowErrMessage(2);
                 }
 
                 try
                 {
                     DirectoryInfo DirInfo1 = new DirectoryInfo(Path);
-                    count = FileCapa(DirInfo1, Capacity, count);
+                    count = StoreinFilesCapacity(DirInfo1, Capacity, count);
                     DirectoryInfo DirInfo2 = DirInfo1;
 
                     while (true)
@@ -89,7 +90,7 @@ namespace FileCapaApp
                             {
                                 diPath.Add(di.FullName);
                                 DirectoryInfo DirInfo3 = new DirectoryInfo(di.FullName);
-                                count = FileCapa(DirInfo3, Capacity, count);
+                                count = StoreinFilesCapacity(DirInfo3, Capacity, count);
                             }
                             DirInfo2 = new DirectoryInfo(diPath[count2]);   //  新たなフォルダのパス
                             count2++;
@@ -99,16 +100,16 @@ namespace FileCapaApp
                             break;
                         }
                     }
-                    textBox3.Text = count.ToString();           //  何件あったか表示
+                    textBoxFindDisplay.Text = count.ToString();           //  何件あったか表示
                 }
                 catch
                 {
-                    Err(1);
+                    ShowErrMessage(1);
                 }
             }
         }
 
-        private void csv保存ToolStripMenuItem_Click(object sender, EventArgs e)    //  csv保存ボタンクリック
+        private void csvSaveToolStripMenuItem_Click(object sender, EventArgs e)     // csv保存ボタンクリック
         {
             SaveFileDialog sa = new SaveFileDialog();            //SaveFileDialogを生成する
             sa.Title = "ファイルを保存する";
@@ -129,7 +130,7 @@ namespace FileCapaApp
                     {
                         string hedder = "";
                         string dt = "";
-                        if ( (r == 0) && (c == 0) )
+                        if ((r == 0) && (c == 0))
                         {
                             for (int h = 0; h <= dataGridView1.Columns.Count - 1; h++)
                             {
@@ -151,12 +152,14 @@ namespace FileCapaApp
             else if (result == DialogResult.Cancel)      //「キャンセル」ボタンまたは「×」ボタンが選択された時の処理
             {
             }
+            sa.Dispose();
         }
-        private int FileCapa(DirectoryInfo Dir, int Capa, int count)
+
+        private int StoreinFilesCapacity(DirectoryInfo dir, int capa, int count)
         {
-            foreach (FileInfo fi in Dir.GetFiles())//フォルダ内の全ファイルを取得
+            foreach (FileInfo fi in dir.GetFiles())//フォルダ内の全ファイルを取得
             {
-                if (fi.Length / 1024 > Capa)        // 設定した値との比較
+                if (fi.Length / 1024 > capa)        // 設定した値との比較
                 {
                     var addValues = new string[]
                     {

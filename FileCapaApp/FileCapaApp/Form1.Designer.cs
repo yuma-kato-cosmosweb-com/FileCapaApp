@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.textBoxFolderName = new System.Windows.Forms.TextBox();
+            this.buttonSelectFolder = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.textBoxCapacity = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
+            this.buttonSearch = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.No = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FilePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -42,31 +42,31 @@
             this.Capacity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.ファイルToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.csv保存ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.csvSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.textBoxFindDisplay = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // textBox1
+            // textBoxFolderName
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 72);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(380, 22);
-            this.textBox1.TabIndex = 0;
-            this.textBox1.Text = "右の参照ボタンをクリックしてフォルダを選択してください";
+            this.textBoxFolderName.Location = new System.Drawing.Point(12, 72);
+            this.textBoxFolderName.Name = "textBoxFolderName";
+            this.textBoxFolderName.Size = new System.Drawing.Size(380, 22);
+            this.textBoxFolderName.TabIndex = 0;
+            this.textBoxFolderName.Text = "右の参照ボタンをクリックしてフォルダを選択してください";
             // 
-            // button1
+            // buttonSelectFolder
             // 
-            this.button1.Location = new System.Drawing.Point(410, 67);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(56, 33);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "参照";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.buttonSelectFolder.Location = new System.Drawing.Point(410, 67);
+            this.buttonSelectFolder.Name = "buttonSelectFolder";
+            this.buttonSelectFolder.Size = new System.Drawing.Size(56, 33);
+            this.buttonSelectFolder.TabIndex = 1;
+            this.buttonSelectFolder.Text = "参照";
+            this.buttonSelectFolder.UseVisualStyleBackColor = true;
+            this.buttonSelectFolder.Click += new System.EventHandler(this.buttonSelectFolder_Click);
             // 
             // label1
             // 
@@ -86,12 +86,12 @@
             this.label2.TabIndex = 5;
             this.label2.Text = "容量(KB)";
             // 
-            // textBox2
+            // textBoxCapacity
             // 
-            this.textBox2.Location = new System.Drawing.Point(516, 72);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(93, 22);
-            this.textBox2.TabIndex = 3;
+            this.textBoxCapacity.Location = new System.Drawing.Point(516, 72);
+            this.textBoxCapacity.Name = "textBoxCapacity";
+            this.textBoxCapacity.Size = new System.Drawing.Size(93, 22);
+            this.textBoxCapacity.TabIndex = 3;
             // 
             // label3
             // 
@@ -102,15 +102,15 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "以上";
             // 
-            // button2
+            // buttonSearch
             // 
-            this.button2.Location = new System.Drawing.Point(695, 55);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(125, 57);
-            this.button2.TabIndex = 7;
-            this.button2.Text = "検索";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.buttonSearch.Location = new System.Drawing.Point(695, 55);
+            this.buttonSearch.Name = "buttonSearch";
+            this.buttonSearch.Size = new System.Drawing.Size(125, 57);
+            this.buttonSearch.TabIndex = 7;
+            this.buttonSearch.Text = "検索";
+            this.buttonSearch.UseVisualStyleBackColor = true;
+            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
             // 
             // dataGridView1
             // 
@@ -165,17 +165,17 @@
             // ファイルToolStripMenuItem
             // 
             this.ファイルToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.csv保存ToolStripMenuItem});
+            this.csvSaveToolStripMenuItem});
             this.ファイルToolStripMenuItem.Name = "ファイルToolStripMenuItem";
             this.ファイルToolStripMenuItem.Size = new System.Drawing.Size(63, 24);
             this.ファイルToolStripMenuItem.Text = "ファイル";
             // 
-            // csv保存ToolStripMenuItem
+            // csvSaveToolStripMenuItem
             // 
-            this.csv保存ToolStripMenuItem.Name = "csv保存ToolStripMenuItem";
-            this.csv保存ToolStripMenuItem.Size = new System.Drawing.Size(134, 26);
-            this.csv保存ToolStripMenuItem.Text = "csv保存";
-            this.csv保存ToolStripMenuItem.Click += new System.EventHandler(this.csv保存ToolStripMenuItem_Click);
+            this.csvSaveToolStripMenuItem.Name = "csvSaveToolStripMenuItem";
+            this.csvSaveToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.csvSaveToolStripMenuItem.Text = "csv保存";
+            this.csvSaveToolStripMenuItem.Click += new System.EventHandler(this.csvSaveToolStripMenuItem_Click);
             // 
             // label4
             // 
@@ -186,12 +186,12 @@
             this.label4.TabIndex = 14;
             this.label4.Text = "ファイル一覧";
             // 
-            // textBox3
+            // textBoxFindDisplay
             // 
-            this.textBox3.Location = new System.Drawing.Point(695, 133);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(125, 22);
-            this.textBox3.TabIndex = 15;
+            this.textBoxFindDisplay.Location = new System.Drawing.Point(695, 133);
+            this.textBoxFindDisplay.Name = "textBoxFindDisplay";
+            this.textBoxFindDisplay.Size = new System.Drawing.Size(125, 22);
+            this.textBoxFindDisplay.TabIndex = 15;
             // 
             // label5
             // 
@@ -208,17 +208,18 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(848, 622);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.textBoxFindDisplay);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.buttonSearch);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.textBoxCapacity);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.buttonSelectFolder);
+            this.Controls.Add(this.textBoxFolderName);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "容量検索";
@@ -232,19 +233,19 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox textBoxFolderName;
+        private System.Windows.Forms.Button buttonSelectFolder;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBoxCapacity;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button buttonSearch;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem ファイルToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem csv保存ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem csvSaveToolStripMenuItem;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox textBoxFindDisplay;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.DataGridViewTextBoxColumn No;
         private System.Windows.Forms.DataGridViewTextBoxColumn FilePath;
