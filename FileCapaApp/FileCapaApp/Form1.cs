@@ -118,41 +118,49 @@ namespace FileCapaApp
             sa.FilterIndex = 1;
 
             DialogResult result = sa.ShowDialog();            //オープンファイルダイアログを表示する
-
-            if (result == DialogResult.OK)          //「保存」ボタンが押された時の処理
-            {
-                string FilePath = sa.FileName;       // 指定されたファイルのパスが取得
-
-                StreamWriter sw = new StreamWriter(FilePath, false, Encoding.GetEncoding("SHIFT-JIS"));     // CSVファイルオープン
-                for (int r = 0; r <= dataGridView1.Rows.Count - 1; r++)
+            try
                 {
-                    for (int c = 0; c <= dataGridView1.Columns.Count - 1; c++)
+                if (result == DialogResult.OK)          //「保存」ボタンが押された時の処理
+                {
+                    string FilePath = sa.FileName;       // 指定されたファイルのパスが取得
+
+                    using (StreamWriter sw = new StreamWriter(FilePath, false, Encoding.GetEncoding("SHIFT-JIS")))     // CSVファイルオープン
                     {
-                        string hedder = "";
-                        string dt = "";
-                        if ((r == 0) && (c == 0))
+                        for (int r = 0; r <= dataGridView1.Rows.Count - 1; r++)
                         {
-                            for (int h = 0; h <= dataGridView1.Columns.Count - 1; h++)
+                            for (int c = 0; c <= dataGridView1.Columns.Count - 1; c++)
                             {
-                                hedder = dataGridView1.Columns[h].HeaderCell.Value.ToString() + ",";
-                                sw.Write(hedder);
+                                string hedder = "";
+                                string dt = "";
+                                if ((r == 0) && (c == 0))
+                                {
+                                    for (int h = 0; h <= dataGridView1.Columns.Count - 1; h++)
+                                    {
+                                        hedder = dataGridView1.Columns[h].HeaderCell.Value.ToString() + ",";
+                                        sw.Write(hedder);
+                                    }
+                                    sw.Write("\n");
+                                }
+                                if (dataGridView1.Rows[r].Cells[c].Value != null)                
+                                {
+                                    dt = dataGridView1.Rows[r].Cells[c].Value.ToString() + ",";         // DataGridViewのセルのデータ取得
+                                }
+                                sw.Write(dt);                    // CSVファイル書込
                             }
                             sw.Write("\n");
                         }
-                        if (dataGridView1.Rows[r].Cells[c].Value != null)                // DataGridViewのセルのデータ取得
-                        {
-                            dt = dataGridView1.Rows[r].Cells[c].Value.ToString() + ",";
-                        }
-                        sw.Write(dt);                        // CSVファイル書込
-                    }
-                    sw.Write("\n");
+                        sw.Close();         // CSVファイルクローズ
+                    }                 
                 }
-                sw.Close();                // CSVファイルクローズ
+                else if (result == DialogResult.Cancel)      //「キャンセル」ボタンまたは「×」ボタンが選択された時の処理
+                {
+                }
             }
-            else if (result == DialogResult.Cancel)      //「キャンセル」ボタンまたは「×」ボタンが選択された時の処理
+            catch(Exception ex)
             {
+                MessageBox.Show(ex.Message, "エラー",  MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            sa.Dispose();
+            
         }
 
         private int StoreinFilesCapacity(DirectoryInfo dir, int capa, int count)
