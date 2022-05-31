@@ -15,7 +15,7 @@ namespace FileCapaApp
     public partial class FormMain : Form
     {
         private const string TextSearching = "検索中";
-        private const string TetxIdle = "検索";
+        private const string TextIdle = "検索";
         delegate void ButtonChangeDelegate(string buttontext);
         public FormMain()
         {
@@ -92,11 +92,14 @@ namespace FileCapaApp
                     IsSearching = false;
                     //Invoke(new ButtonChangeDelegate(ButtonChange), "検索中止");             // 検索ボタンの文字を検索中止にする
                 }
-                Task.Run( () =>
+                Task.Run(() =>
                 {
                     IsSearching = true;
                     stopWatch.Start();
-                    Invoke(new ButtonChangeDelegate(ButtonChange), TextSearching);     // 検索ボタンの文字を検索中にする
+                    Invoke((MethodInvoker)(() =>
+                    {
+                        buttonSearch.Text = TextSearching;   // 検索ボタンの文字を検索中にする
+                    }));
                     while (IsSearching)                   // 検索中にボタンが押されない限りループ
                     {
                         TimeSpan ts = stopWatch.Elapsed;
@@ -106,8 +109,10 @@ namespace FileCapaApp
                         }
                     }
                     stopWatch.Stop();
-                    Invoke(new ButtonChangeDelegate(ButtonChange), TetxIdle);     // 検索ボタンの文字を検索にする
-
+                    Invoke((MethodInvoker)(() =>
+                    {
+                        buttonSearch.Text = TextIdle;   // 検索ボタンの文字を検索にする
+                    }));
                 });
 #if false
                 try
@@ -214,9 +219,9 @@ namespace FileCapaApp
             }
             return count;
         }
-        private void ButtonChange(string buttonname)
+        /*private void ButtonChange(string buttonname)
         {
             buttonSearch.Text = buttonname;
-        }
+        }*/
     }
 }
