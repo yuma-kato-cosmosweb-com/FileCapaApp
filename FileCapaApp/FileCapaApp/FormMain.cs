@@ -71,24 +71,13 @@ namespace FileCapaApp
                 string Path = "";
                 int Capacity = 0;
 
-                if (textBoxFolderName.Text == "")             //  空白ではないか確認
-                {
-                    ShowErrMessage(1);
-                }
-                else
+                bool test = TestSearching();  // テストメソッド呼び出し
+
+                if (test)
                 {
                     Path = textBoxFolderName.Text;
-                    try
-                    {
-                        int.Parse(textBoxCapacity.Text);        //  int型に変換できるか確認
-                        Capacity = int.Parse(textBoxCapacity.Text);
-                        Searcing(Path, Capacity);
-                    }
-                    catch
-                    {
-                        ShowErrMessage(2);
-                        return;
-                    }
+                    Capacity = int.Parse(textBoxCapacity.Text);
+                    Searcing(Path, Capacity);               // 検索メソッド呼び出し
                 }
             }
         }
@@ -149,34 +138,39 @@ namespace FileCapaApp
 
         private int StoreinFilesCapacity(DirectoryInfo dir, int capa, int count)
         {
-            foreach (FileInfo fi in dir.GetFiles())//フォルダ内の全ファイルを取得
+            try
             {
-                if (fi.Length / 1024 > capa)        // 設定した値との比較
+                foreach (FileInfo fi in dir.GetFiles())//フォルダ内の全ファイルを取得
                 {
-                    var addValues = new string[]
+                    if (fi.Length / 1024 > capa)        // 設定した値との比較
                     {
+                        var addValues = new string[]
+                        {
                             (count + 1).ToString(), fi.DirectoryName, fi.Name, (fi.Length / 1024).ToString() + "KB"
-                    };
-                    if (IsSearching == false)
-                    {
-                        break;
+                        };
+                        if (IsSearching == false)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            dataGridView1.Rows.Insert(count, addValues);        //  表に出力
+                            count++;
+                        }
                     }
-                    else
-                    {
-                        dataGridView1.Rows.Insert(count, addValues);        //  表に出力
-                        count++; 
-                    }
-                    
                 }
-                
+            }
+            catch
+            {
+                ShowErrMessage(1);
             }
             return count;
         }
-        private void Canceled()
+        private void Canceled()       // キャンセル処理
         {
             IsSearching = false;
         }
-        private void Searcing(string path, int capacity)
+        private void Searcing(string path, int capacity)     //  検索
         {
             int count = 0;
             int count2 = 0;
@@ -189,7 +183,9 @@ namespace FileCapaApp
                 {
                     DirectoryInfo DirInfo1 = new DirectoryInfo(path);
                     Delegate storeinFilesCapacity = StoreinFilesCapacity;
+
                     count = Convert.ToInt32(Invoke(storeinFilesCapacity, DirInfo1, capacity, count));
+
                     DirectoryInfo DirInfo2 = DirInfo1;
 
                     while (IsSearching)
@@ -206,6 +202,7 @@ namespace FileCapaApp
                                 DirectoryInfo DirInfo3 = new DirectoryInfo(di.FullName);
 
                                 count = Convert.ToInt32(Invoke(storeinFilesCapacity, DirInfo3, capacity, count));
+
                                 if (IsSearching == false)
                                 {
                                     break;
@@ -233,6 +230,28 @@ namespace FileCapaApp
                     buttonSearch.Text = TextIdle;   // 検索ボタンの文字を検索にする
                 }));
             });
+        }
+
+        private bool TestSearching()         //  検索前のテスト
+        {
+            if (textBoxFolderName.Text == "")             //  空白ではないか確認
+            {
+                ShowErrMessage(1);
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    int.Parse(textBoxCapacity.Text);        //  int型に変換できるか確認
+                }
+                catch
+                {
+                    ShowErrMessage(2);
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
