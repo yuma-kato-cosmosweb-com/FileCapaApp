@@ -16,7 +16,8 @@ namespace FileCapaApp
     {
         private const string TextSearching = "検索中";
         private const string TextIdle = "検索";
-        delegate void ButtonChangeDelegate(string buttontext);
+
+        delegate int Delegate(DirectoryInfo dir, int capa, int count);
         public FormMain()
         {
             InitializeComponent();
@@ -60,92 +61,35 @@ namespace FileCapaApp
 
         private void buttonSearch_Click(object sender, EventArgs e)      //  検索ボタンクリック
         {
-            dataGridView1.Rows.Clear();             //  表初期化
-            string Path = "";
-            int Capacity = 0;
-            int count = 0;
-            int count2 = 0;
-            var diPath = new List<string>();
-            Stopwatch stopWatch = new Stopwatch();
-
-            Path = textBoxFolderName.Text;
-
-            if (Path == "")             //  空白ではないか確認
+            if (buttonSearch.Text == TextSearching)                // ファイルを検索中かどうか
             {
-                ShowErrMessage(1);
+                Canceled();
             }
-
             else
             {
-                try
-                {
-                    Capacity = int.Parse(textBoxCapacity.Text);        //  int型に変換できるか確認
-                }
-                catch
-                {
-                    ShowErrMessage(2);
-                    return;
-                }
+                dataGridView1.Rows.Clear(); //  表初期化
+                string Path = "";
+                int Capacity = 0;
 
-                if (buttonSearch.Text == TextSearching)                // ファイルを検索中かどうか
-                {
-                    IsSearching = false;
-                    //Invoke(new ButtonChangeDelegate(ButtonChange), "検索中止");             // 検索ボタンの文字を検索中止にする
-                }
-                Task.Run(() =>
-                {
-                    IsSearching = true;
-                    stopWatch.Start();
-                    Invoke((MethodInvoker)(() =>
-                    {
-                        buttonSearch.Text = TextSearching;   // 検索ボタンの文字を検索中にする
-                    }));
-                    while (IsSearching)                   // 検索中にボタンが押されない限りループ
-                    {
-                        TimeSpan ts = stopWatch.Elapsed;
-                        if (ts.TotalSeconds > 5)
-                        {
-                            break;
-                        }
-                    }
-                    stopWatch.Stop();
-                    Invoke((MethodInvoker)(() =>
-                    {
-                        buttonSearch.Text = TextIdle;   // 検索ボタンの文字を検索にする
-                    }));
-                });
-#if false
-                try
-                {
-                    DirectoryInfo DirInfo1 = new DirectoryInfo(Path);
-                    count = StoreinFilesCapacity(DirInfo1, Capacity, count);
-                    DirectoryInfo DirInfo2 = DirInfo1;
-
-                    while (true)
-                    {
-                        try
-                        {
-                            foreach (DirectoryInfo di in DirInfo2.GetDirectories())//フォルダ内のフォルダを取得
-                            {
-                                diPath.Add(di.FullName);
-                                DirectoryInfo DirInfo3 = new DirectoryInfo(di.FullName);
-                                count = StoreinFilesCapacity(DirInfo3, Capacity, count);
-                            }
-                            DirInfo2 = new DirectoryInfo(diPath[count2]);   //  新たなフォルダのパス
-                            count2++;
-                        }
-                        catch
-                        {
-                            break;
-                        }
-                    }
-                    textBoxFindDisplay.Text = count.ToString();           //  何件あったか表示
-                }
-                catch
+                if (textBoxFolderName.Text == "")             //  空白ではないか確認
                 {
                     ShowErrMessage(1);
                 }
-#endif
+                else
+                {
+                    Path = textBoxFolderName.Text;
+                    try
+                    {
+                        int.Parse(textBoxCapacity.Text);        //  int型に変換できるか確認
+                        Capacity = int.Parse(textBoxCapacity.Text);
+                        Searcing(Path, Capacity);
+                    }
+                    catch
+                    {
+                        ShowErrMessage(2);
+                        return;
+                    }
+                }
             }
         }
 
@@ -213,15 +157,82 @@ namespace FileCapaApp
                     {
                             (count + 1).ToString(), fi.DirectoryName, fi.Name, (fi.Length / 1024).ToString() + "KB"
                     };
-                    dataGridView1.Rows.Insert(count, addValues);        //  表に出力
-                    count++;
+                    if (IsSearching == false)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        dataGridView1.Rows.Insert(count, addValues);        //  表に出力
+                        count++; 
+                    }
+                    
                 }
+                
             }
             return count;
         }
-        /*private void ButtonChange(string buttonname)
+        private void Canceled()
         {
-            buttonSearch.Text = buttonname;
-        }*/
+            IsSearching = false;
+        }
+        private void Searcing(string path, int capacity)
+        {
+            int count = 0;
+            int count2 = 0;
+            var diPath = new List<string>();
+            Task.Run( () =>
+            {
+                IsSearching = true;
+
+                try
+                {
+                    DirectoryInfo DirInfo1 = new DirectoryInfo(path);
+                    Delegate storeinFilesCapacity = StoreinFilesCapacity;
+                    count = Convert.ToInt32(Invoke(storeinFilesCapacity, DirInfo1, capacity, count));
+                    DirectoryInfo DirInfo2 = DirInfo1;
+
+                    while (IsSearching)
+                    {
+                        Invoke((MethodInvoker)(() =>
+                        {
+                            buttonSearch.Text = TextSearching;   // 検索ボタンの文字を検索中にする
+                        }));
+                        try
+                        {
+                            foreach (DirectoryInfo di in DirInfo2.GetDirectories())//フォルダ内のフォルダを取得
+                            {
+                                diPath.Add(di.FullName);
+                                DirectoryInfo DirInfo3 = new DirectoryInfo(di.FullName);
+
+                                count = Convert.ToInt32(Invoke(storeinFilesCapacity, DirInfo3, capacity, count));
+                                if (IsSearching == false)
+                                {
+                                    break;
+                                }
+                            }
+                            DirInfo2 = new DirectoryInfo(diPath[count2]);   //  新たなフォルダのパス
+                            count2++;
+                        }
+                        catch
+                        {
+                            break;
+                        }
+                    }
+                    Invoke((MethodInvoker)(() =>
+                    {
+                        textBoxFindDisplay.Text = count.ToString();           //  何件あったか表示
+                    }));
+                }
+                catch
+                {
+                    ShowErrMessage(1);
+                }
+                Invoke((MethodInvoker)(() =>
+                {
+                    buttonSearch.Text = TextIdle;   // 検索ボタンの文字を検索にする
+                }));
+            });
+        }
     }
 }
